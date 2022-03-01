@@ -1,30 +1,38 @@
 // get search text
 const searchPhone = ()=>{
+
     const searchField=document.getElementById("search-field");
    const searchFieldText=searchField.value;
+
+   const displayDetailContainer=document.getElementById('detail-container');
+displayDetailContainer.textContent="";
+  
+ 
   const searchFieldTextToLower= searchFieldText.toLowerCase();
-  getPhone(searchFieldTextToLower);
- searchField.value='';
+ // getPhone(searchFieldTextToLower);
+ 
   // console.log(searchFieldTextToLower)
 
-}
-// get search result
-
-const getPhone = (searchName)=>{
- 
-   // console.log(phone)
-    fetch(`https://openapi.programming-hero.com/api/phones?search=${searchName}`)
+    // console.log(phone)
+    fetch(`https://openapi.programming-hero.com/api/phones?search=${searchFieldTextToLower}`)
     .then(res=>res.json())
-    .then(data=>displayPhone(data.data))
+    .then(data=>displayPhone(data));
+    searchField.value='';
 
 }
 // display scarch result
 
 const displayPhone=(phones)=>{
+
+    if(phones.status ===false) {
+        console.log('9')
+    } else {
+
 console.log(phones);
 const displayPhoneContainer = document.getElementById("display-field-container");
-displayPhoneContainer.innerText='';
-phones.slice(0,20).forEach(phone => {
+displayPhoneContainer.innerHTML='';
+
+phones.data.slice(0,20).forEach(phone => {
     const div=document.createElement("div");
     div.classList.add('col');
     div.innerHTML=`
@@ -40,7 +48,12 @@ phones.slice(0,20).forEach(phone => {
   </div>
     `
 displayPhoneContainer.appendChild(div)
+
+
+
+
 });
+}
 
 }
 // get detail
@@ -54,7 +67,7 @@ const getDetail=(phoneId)=>{
 const displayDetail =(detailData)=>{
   console.log(detailData)
 const displayDetailContainer=document.getElementById('detail-container');
-displayDetailContainer.innerText='';
+displayDetailContainer.innerHTML='';
 const detailDiv=document.createElement("div");
 detailDiv.classList.add("card");
 detailDiv.innerHTML=`
@@ -66,10 +79,13 @@ detailDiv.innerHTML=`
   <p> Memory:${detailData.mainFeatures.memory}</p>
   <p> Display-Size:${detailData.mainFeatures.displaySize}</p>
   <p> Chip-Set:${detailData.mainFeatures.chipSet}</p>
-  <p> Sensors:${detailData.mainFeatures.sensors[0],detailData.mainFeatures.sensors[1], detailData.mainFeatures.sensors[2], detailData.mainFeatures.sensors[3] }</p>
-  
 </div>
 `
+`${detailData.mainFeatures.sensors.forEach(sensor =>{
+    console.log(sensor)
+  }) } `
+
+
 displayDetailContainer.appendChild(detailDiv)
 
 }

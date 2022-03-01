@@ -1,3 +1,5 @@
-#phone-invalid {
+/* display control */
+#phone-invalid,
+#loader {
   display: none;
 }

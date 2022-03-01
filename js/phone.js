@@ -1,12 +1,15 @@
 const displayDetailContainer = document.getElementById("detail-container");
+const displayAllContainer = document.getElementById("display-field-container");
+const displayLoader = document.getElementById("loader");
+const displayInvalidInput = document.getElementById("phone-invalid");
+
 // Search phone
 const searchPhone = () => {
   const searchField = document.getElementById("search-field");
   const searchFieldText = searchField.value;
-  // const displayDetailContainer = document.getElementById("detail-container");
   displayDetailContainer.textContent = "";
   const searchText = searchFieldText.toLowerCase();
-
+  displayLoader.style.display = "block";
   fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`)
     .then((res) => res.json())
     .then((data) => displayPhone(data));
@@ -17,14 +20,17 @@ const searchPhone = () => {
 // Display 20 phone scarch result
 const displayPhone = (phones) => {
   if (phones.status === false) {
-    document.getElementById("phone-invalid").style.display = "block";
+    displayInvalidInput.style.display = "block";
     displayDetailContainer.textContent = "";
+    displayAllContainer.textContent = "";
+    displayLoader.style.display = "none";
   } else {
-    document.getElementById("phone-invalid").style.display = "none";
+    displayInvalidInput.style.display = "none";
+    displayLoader.style.display = "none";
     const displayPhoneContainer = document.getElementById(
       "display-field-container"
     );
-    displayPhoneContainer.innerHTML = "";
+    displayPhoneContainer.textContent = "";
 
     phones.data.slice(0, 20).forEach((phone) => {
       const div = document.createElement("div");
@@ -46,7 +52,6 @@ const displayPhone = (phones) => {
 
 // get single phone detail
 const getDetail = (phoneId) => {
-  console.log(phoneId);
   fetch(`https://openapi.programming-hero.com/api/phone/${phoneId}`)
     .then((res) => res.json())
     .then((data) => displayDetail(data.data));

@@ -95,9 +95,15 @@ const displayDetail = (detailData) => {
   }
 
   //other data of single phone
-  for (const [key, value] of Object.entries(detailData.others)) {
+  if (detailData.others) {
+    for (const [key, value] of Object.entries(detailData.others)) {
+      const li = document.createElement("li");
+      li.innerText = `${key}: ${value}`;
+      document.getElementById("others-data").appendChild(li);
+    }
+  } else {
     const li = document.createElement("li");
-    li.innerText = `${key}: ${value}`;
+    li.innerText = `Not available`;
     document.getElementById("others-data").appendChild(li);
   }
 };

@@ -2,6 +2,7 @@ const displayDetailContainer = document.getElementById("detail-container");
 const displayAllContainer = document.getElementById("display-field-container");
 const displayLoader = document.getElementById("loader");
 const displayInvalidInput = document.getElementById("phone-invalid");
+const displayAllDataBtn = document.getElementById("show-all-btn");
 
 // Search phone
 const searchPhone = () => {
@@ -9,7 +10,6 @@ const searchPhone = () => {
   const searchFieldText = searchField.value;
   displayDetailContainer.textContent = "";
   const searchText = searchFieldText.toLowerCase();
-  displayLoader.style.display = "block";
   fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`)
     .then((res) => res.json())
     .then((data) => displayPhone(data));
@@ -32,7 +32,10 @@ const displayPhone = (phones) => {
     );
     displayPhoneContainer.textContent = "";
 
-    phones.data.slice(0, 20).forEach((phone) => {
+    const phoneAll = phones.data;
+    const phone20 = phones.data.slice(0, 20);
+
+    phone20.forEach((phone) => {
       const div = document.createElement("div");
       div.classList.add("col");
       div.innerHTML = `
@@ -41,12 +44,16 @@ const displayPhone = (phones) => {
     <div class="card-body">
       <h5 class="card-title">Name: ${phone.phone_name}</h5>
       <h5 class="card-title">Brand: ${phone.brand}</h5>
-     <button class="rounded btn btn-secondary w-125" onclick="getDetail('${phone.slug}')" >DETAIL</button>
+     <button class="rounded btn btn-secondary w-125" onclick="getDetail('${phone.slug}')" >Show Detail</button>
     </div>
   </div>
     `;
       displayPhoneContainer.appendChild(div);
     });
+
+    if (phoneAll.length > 20) {
+      displayAllDataBtn.style.display = "block";
+    }
   }
 };
 

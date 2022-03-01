@@ -1,5 +1,6 @@
 /* display control */
 #phone-invalid,
-#loader {
+#loader,
+#show-all-btn {
   display: none;
 }

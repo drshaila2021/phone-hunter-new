@@ -2,7 +2,6 @@ const displayDetailContainer = document.getElementById("detail-container");
 const displayAllContainer = document.getElementById("display-field-container");
 const displayLoader = document.getElementById("loader");
 const displayInvalidInput = document.getElementById("phone-invalid");
-const displayAllDataBtn = document.getElementById("show-all-btn");
 
 // Search phone
 const searchPhone = () => {
@@ -10,6 +9,8 @@ const searchPhone = () => {
   const searchFieldText = searchField.value;
   displayDetailContainer.textContent = "";
   const searchText = searchFieldText.toLowerCase();
+  displayLoader.style.display = "block";
+
   fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`)
     .then((res) => res.json())
     .then((data) => displayPhone(data));
@@ -21,9 +22,9 @@ const searchPhone = () => {
 const displayPhone = (phones) => {
   if (phones.status === false) {
     displayInvalidInput.style.display = "block";
+    displayLoader.style.display = "none";
     displayDetailContainer.textContent = "";
     displayAllContainer.textContent = "";
-    displayLoader.style.display = "none";
   } else {
     displayInvalidInput.style.display = "none";
     displayLoader.style.display = "none";
@@ -32,9 +33,7 @@ const displayPhone = (phones) => {
     );
     displayPhoneContainer.textContent = "";
 
-    const phoneAll = phones.data;
     const phone20 = phones.data.slice(0, 20);
-
     phone20.forEach((phone) => {
       const div = document.createElement("div");
       div.classList.add("col");
@@ -50,10 +49,6 @@ const displayPhone = (phones) => {
     `;
       displayPhoneContainer.appendChild(div);
     });
-
-    if (phoneAll.length > 20) {
-      displayAllDataBtn.style.display = "block";
-    }
   }
 };
 

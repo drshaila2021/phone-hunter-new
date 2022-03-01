@@ -1,96 +1,89 @@
-// get search text
-const searchPhone = ()=>{
+const displayDetailContainer = document.getElementById("detail-container");
+// Search phone
+const searchPhone = () => {
+  const searchField = document.getElementById("search-field");
+  const searchFieldText = searchField.value;
+  // const displayDetailContainer = document.getElementById("detail-container");
+  displayDetailContainer.textContent = "";
+  const searchText = searchFieldText.toLowerCase();
 
-    const searchField=document.getElementById("search-field");
-   const searchFieldText=searchField.value;
+  fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`)
+    .then((res) => res.json())
+    .then((data) => displayPhone(data));
 
-   const displayDetailContainer=document.getElementById('detail-container');
-displayDetailContainer.textContent="";
-  
- 
-  const searchFieldTextToLower= searchFieldText.toLowerCase();
- // getPhone(searchFieldTextToLower);
- 
-  // console.log(searchFieldTextToLower)
+  searchField.value = "";
+};
 
-    // console.log(phone)
-    fetch(`https://openapi.programming-hero.com/api/phones?search=${searchFieldTextToLower}`)
-    .then(res=>res.json())
-    .then(data=>displayPhone(data));
-    searchField.value='';
+// Display 20 phone scarch result
+const displayPhone = (phones) => {
+  if (phones.status === false) {
+    document.getElementById("phone-invalid").style.display = "block";
+    displayDetailContainer.textContent = "";
+  } else {
+    document.getElementById("phone-invalid").style.display = "none";
+    const displayPhoneContainer = document.getElementById(
+      "display-field-container"
+    );
+    displayPhoneContainer.innerHTML = "";
 
-}
-// display scarch result
-
-const displayPhone=(phones)=>{
-
-    if(phones.status ===false) {
-        console.log('9')
-    } else {
-
-console.log(phones);
-const displayPhoneContainer = document.getElementById("display-field-container");
-displayPhoneContainer.innerHTML='';
-
-phones.data.slice(0,20).forEach(phone => {
-    const div=document.createElement("div");
-    div.classList.add('col');
-    div.innerHTML=`
+    phones.data.slice(0, 20).forEach((phone) => {
+      const div = document.createElement("div");
+      div.classList.add("col");
+      div.innerHTML = `
     <div class="card h-100">
-    <img src="${phone.image}" class="card-img-top w-50 mx-auto" alt="...">
+    <img src="${phone.image}" class="card-img-top w-50 mx-auto mt-3" alt="...">
     <div class="card-body">
-      <h5 class="card-title">Name-${phone.phone_name}</h5>
-
-      <h5 class="card-title"> Brand-${phone.brand}</h5>
-
-     <button class="rounded btn btn-secondary" onclick="getDetail('${phone.slug}')" >DETAIL</button>
+      <h5 class="card-title">Name: ${phone.phone_name}</h5>
+      <h5 class="card-title">Brand: ${phone.brand}</h5>
+     <button class="rounded btn btn-secondary w-125" onclick="getDetail('${phone.slug}')" >DETAIL</button>
     </div>
   </div>
-    `
-displayPhoneContainer.appendChild(div)
+    `;
+      displayPhoneContainer.appendChild(div);
+    });
+  }
+};
 
+// get single phone detail
+const getDetail = (phoneId) => {
+  console.log(phoneId);
+  fetch(`https://openapi.programming-hero.com/api/phone/${phoneId}`)
+    .then((res) => res.json())
+    .then((data) => displayDetail(data.data));
+};
 
-
-
-});
-}
-
-}
-// get detail
-const getDetail=(phoneId)=>{
-    console.log(phoneId)
-    fetch(`https://openapi.programming-hero.com/api/phone/${phoneId}`)
-    .then(res=>res.json())
-    .then(data=>displayDetail(data.data))
-}
-// display detail
-const displayDetail =(detailData)=>{
-  console.log(detailData)
-const displayDetailContainer=document.getElementById('detail-container');
-displayDetailContainer.innerHTML='';
-const detailDiv=document.createElement("div");
-detailDiv.classList.add("card");
-detailDiv.innerHTML=`
-<img src="${detailData.image}" class="card-img-top w-50 mx-auto" alt="...">
+// display single phone detail
+const displayDetail = (detailData) => {
+  console.log(detailData);
+  const displayDetailContainer = document.getElementById("detail-container");
+  displayDetailContainer.textContent = "";
+  const detailDiv = document.createElement("div");
+  detailDiv.classList.add("card");
+  detailDiv.innerHTML = `
+<img src="${detailData.image}" class="card-img-top w-50 mx-auto mt-3" alt="...">
 <div class="card-body">
-  <h5 class="card-title">${detailData.name}</h5>
-  <p class="card-text">Release Date:${detailData.releaseDate?detailData.releaseDate:'Not available'}</p>
-  <p>Storage:${detailData.mainFeatures.storage}</p>
-  <p> Memory:${detailData.mainFeatures.memory}</p>
-  <p> Display-Size:${detailData.mainFeatures.displaySize}</p>
-  <p> Chip-Set:${detailData.mainFeatures.chipSet}</p>
-  <ul id="sensor-data">Sensors</ul>
+  <h4 class="card-title text-center">${detailData.name}</h4>
+  <hr>
+  <p class="card-text"><b>Brand:</b> ${detailData.brand}</p>
+  <p class="card-text"><b>Release Date:</b> ${
+    detailData.releaseDate ? detailData.releaseDate : "Not available"
+  }</p>
+  <p class="card-text"><b>Storage:</b> ${detailData.mainFeatures.storage}</p>
+  <p class="card-text"><b>Memory:</b> ${detailData.mainFeatures.memory}</p>
+  <p class="card-text"><b>Display-Size:</b> ${
+    detailData.mainFeatures.displaySize
+  }</p>
+  <p class="card-text"><b>Chip-Set:</b> ${detailData.mainFeatures.chipSet}</p>
+  <ul class="card-text" id="sensor-data"><b>Sensors:</b><br></ul>
+  
 </div>
-`
-displayDetailContainer.appendChild(detailDiv);
-const sensorData = detailData.mainFeatures.sensors;
+`;
+  displayDetailContainer.appendChild(detailDiv);
+  const sensorData = detailData.mainFeatures.sensors;
 
-for (let i=0; i < sensorData.length; i++){
-    const li = document.createElement('li');
+  for (let i = 0; i < sensorData.length; i++) {
+    const li = document.createElement("li");
     li.innerText = detailData.mainFeatures.sensors[i];
     document.getElementById("sensor-data").appendChild(li);
-}
-
-}
-
-//getPhone('iphone')
+  }
+};

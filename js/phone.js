@@ -59,7 +59,6 @@ const getDetail = (phoneId) => {
 
 // display single phone detail
 const displayDetail = (detailData) => {
-  console.log(detailData);
   const displayDetailContainer = document.getElementById("detail-container");
   displayDetailContainer.textContent = "";
   const detailDiv = document.createElement("div");
@@ -80,15 +79,23 @@ const displayDetail = (detailData) => {
   }</p>
   <p class="card-text"><b>Chip-Set:</b> ${detailData.mainFeatures.chipSet}</p>
   <ul class="card-text" id="sensor-data"><b>Sensors:</b><br></ul>
-  
+  <ul class="card-text" id="others-data"><b>Others:</b><br></ul>
 </div>
 `;
   displayDetailContainer.appendChild(detailDiv);
-  const sensorData = detailData.mainFeatures.sensors;
 
-  for (let i = 0; i < sensorData.length; i++) {
+  //sensor data of single phone
+  const sensorsData = detailData.mainFeatures.sensors;
+  for (const sensor of sensorsData) {
     const li = document.createElement("li");
-    li.innerText = detailData.mainFeatures.sensors[i];
+    li.innerText = `${sensor}`;
     document.getElementById("sensor-data").appendChild(li);
+  }
+
+  //other data of single phone
+  for (const [key, value] of Object.entries(detailData.others)) {
+    const li = document.createElement("li");
+    li.innerText = `${key}: ${value}`;
+    document.getElementById("others-data").appendChild(li);
   }
 };

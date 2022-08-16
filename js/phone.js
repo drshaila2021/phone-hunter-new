@@ -103,7 +103,7 @@ const displayDetail = (detailData) => {
     }
   } else {
     const li = document.createElement("li");
-    li.innerText = `No available`;
+    li.innerText = `Not available`;
     document.getElementById("others-data").appendChild(li);
   }
 };
